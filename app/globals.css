@@ -1,0 +1,90 @@
+@import "tailwindcss";
+@import "@fontsource/playfair-display/700.css";
+@import "@fontsource/playfair-display/700-italic.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+
+@theme {
+  /* --- NOIR LUXE design tokens (from Stitch DESIGN.md / stitch pages) --- */
+  --color-primary: #111111;
+  --color-on-primary: #ffffff;
+  --color-secondary: #5d5f5f;
+  --color-on-secondary: #ffffff;
+
+  --color-background: #f9f9f9;
+  --color-surface: #f9f9f9;
+  --color-surface-dim: #dadada;
+  --color-surface-bright: #f9f9f9;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f4f3f3;
+  --color-surface-container: #eeeeee;
+  --color-surface-container-high: #e8e8e8;
+  --color-surface-container-highest: #e2e2e2;
+  --color-surface-variant: #e2e2e2;
+
+  --color-on-surface: #1a1c1c;
+  --color-on-surface-variant: #444748;
+
+  --color-outline: #747878;
+  --color-outline-variant: #c4c7c7;
+
+  --color-accent: #7a8271; /* muted green - key actions / success */
+  --color-beige: #d9d0c1; /* warm beige - seasonal accents */
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+
+  /* Admin dashboard is dark-mode by default */
+  --color-ink: #111111;
+  --color-ink-panel: #1a1a1a;
+  --color-ink-border: #2e2e2e;
+
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-none: 0px;
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+
+  --breakpoint-xs: 420px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    font-family: var(--font-body);
+  }
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+  }
+  ::selection {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+}
+
+@layer utilities {
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .tracking-label {
+    letter-spacing: 0.1em;
+  }
+  .container-max {
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

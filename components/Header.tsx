@@ -1,0 +1,87 @@
+"use client";
+
+import Link from "next/link";
+import { useState } from "react";
+import { Menu, X, Search, ShoppingBag, User } from "lucide-react";
+
+const links = [
+  { href: "/products", label: "Shop" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
+
+export default function Header({ cartCount = 0 }: { cartCount?: number }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <header className="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-outline-variant/40">
+      <nav className="flex items-center justify-between px-5 md:px-16 py-4">
+        {/* Left: links (desktop) */}
+        <div className="hidden md:flex items-center gap-8 flex-1">
+          {links.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="text-xs font-medium tracking-label uppercase text-secondary hover:text-primary transition-colors"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Mobile menu toggle */}
+        <button
+          className="md:hidden text-primary"
+          aria-label="Toggle menu"
+          onClick={() => setOpen((v) => !v)}
+        >
+          {open ? <X size={22} /> : <Menu size={22} />}
+        </button>
+
+        {/* Center: logo */}
+        <Link href="/" className="flex-none text-center font-display text-2xl md:text-4xl tracking-tighter text-primary">
+          NOIR
+        </Link>
+
+        {/* Right: actions */}
+        <div className="hidden md:flex items-center justify-end gap-6 flex-1">
+          <button aria-label="Search" className="text-primary hover:scale-95 active:scale-90 transition-transform">
+            <Search size={20} />
+          </button>
+          <Link href="/cart" aria-label="Cart" className="relative text-primary hover:scale-95 active:scale-90 transition-transform">
+            <ShoppingBag size={20} />
+            {cartCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-primary text-on-primary text-[9px] w-4 h-4 flex items-center justify-center rounded-full">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+          <Link href="/admin" aria-label="Account" className="text-primary hover:scale-95 active:scale-90 transition-transform">
+            <User size={20} />
+          </Link>
+        </div>
+      </nav>
+
+      {/* Mobile menu panel */}
+      {open && (
+        <div className="md:hidden flex flex-col gap-6 px-5 py-8 border-t border-outline-variant/40 bg-surface">
+          {links.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              onClick={() => setOpen(false)}
+              className="text-sm font-medium tracking-label uppercase text-primary"
+            >
+              {l.label}
+            </Link>
+          ))}
+          <div className="flex items-center gap-6 pt-4 border-t border-outline-variant/40">
+            <Search size={20} />
+            <ShoppingBag size={20} />
+            <User size={20} />
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
