@@ -5,7 +5,7 @@ export default function StorefrontLayout({ children }: { children: React.ReactNo
   return (
     <>
       <Header />
-      <main className="pt-[72px]">{children}</main>
+      <main className="pt-18">{children}</main>
       <Footer />
     </>
   );

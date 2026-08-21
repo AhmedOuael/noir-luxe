@@ -5,9 +5,9 @@ export default function AboutPage() {
     <div>
       {/* Editorial split hero */}
       <section className="flex flex-col md:flex-row">
-        <div className="w-full md:w-1/2 h-[70vh] md:h-[calc(100vh-72px)] md:sticky md:top-[72px] overflow-hidden">
+        <div className="w-full md:w-1/2 h-[70vh] md:h-[calc(100vh-72px)] md:sticky md:top-18 overflow-hidden">
           <Image
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtuHXWgPcus31EPaKUSywqkGrOwDHPauG_XSXu6guiHwj8qvB_T4W-kaGBgBOG1xrGUiU-bj-VmZbr0wPjA1mmmoKk4a0uLIXyhAmgQ5_ffZIi8SfK0sJZssDE3sAQcN2pvbGl50EaMeapBFkGBYZzjfq8rQY1AIva6YsIjdcARuQew4Lr06DOnhTYS16RMh6AnhyZBhsgFQdUy_W1PrCvzQS2F7h7bDBA0A-XZQZUBSCptv6B_HQ9SoIixEkB82k6Apw7pdYwWv6q"
+            src="/images/product4.jpg"
             alt="NOIR editorial portrait"
             fill
             className="object-cover grayscale"
@@ -55,7 +55,7 @@ export default function AboutPage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           <div className="md:col-span-8 bg-surface-container-lowest overflow-hidden group">
-            <div className="aspect-[16/9] w-full overflow-hidden">
+            <div className="aspect-video w-full overflow-hidden">
               <Image
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPDf61VQHNqDNHuMa-Xmk8rhgcbPrufwcrQ1__nmS8fhKdxh7dZzLvZScldeZA9-ws8FeL4mz8N_ROlPGCGhpFGaA-NAcnAp_ItQqNezJGX1i_hgeQKvJk9dTYxhElR_qajzali589RrndmlRcxVqSTaGXXKoncBJrXKBRjYz2h8ESRmoQiu4Ld01MaJQ9hc47SwKRsjTUsG22Og0zZg846YpRTnS8XBuqTPiOSpvYfqBOt48trbx32cgn0zEcX136bivYPWxH3LIK"
                 alt="Raw denim material detail"
@@ -117,7 +117,7 @@ export default function AboutPage() {
         </div>
         <div className="h-[60vh] md:h-auto">
           <Image
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNk3W3tTH7RFaZHE4-EQbnt8ntLhXk9t-H4i8Z4Y1YN1JrfIBhSDKOCsGkyHgIbqfsAFmlSa1delUACHexW_wRIZIvqdMb4O084bsd5--EO4fWyHuv5veG3cg6ZNeYs2PJE16087NuWN-jwzcDXMmmZB7TaGRJQ8o-buvrRfMCxOcQ4hJgsV5iQdMCt4LiRs2D8PVKXaSMHPHI9achzlzoG5K2q0MiNw0o8yjr2KgdJoOqyQk6PVx6Zzqob2ep9iPpJi_-e3v7nom1"
+            src="/images/annaba.jpg"
             alt="Algiers modernist architecture"
             width={1200}
             height={900}

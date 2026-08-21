@@ -17,7 +17,9 @@ export type Product = {
   image: string; // primary image
   gallery: string[];
   sizes: Partial<Record<Size, number>>; // size -> stock count
-  limited?: boolean;
+  qrcode?: string; // optional QR code 
+  limited?: boolean; // optional flag for limited edition products
+  
 };
 
 export const products: Product[] = [
@@ -32,10 +34,9 @@ export const products: Product[] = [
     description:
       "An oversized, heavyweight hoodie built from 450GSM brushed cotton. Structured box fit with a dropped shoulder and minimal embroidered wordmark.",
     details: ["450GSM cotton fleece", "Boxy, oversized fit", "Ribbed cuffs & hem", "Made & finished in Algeria"],
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuB55S96v3ojET-pxG9DZN10xSGwC8afn-KVDcHQkQJ1Umh0VATT63UddMn1lO80WIrSWd4Ttf8DemWXJSmQE29Nx0-pi4ssH5C0yxPicSf1Do64WvVtAqLsAe-RrtrsVFaU7cn7xz7oF4loWsqh5xrWwsjpwADyRYDY283TwsWyyP-QEdO--f05kFSuzHpn1WX5POQ1yLJuR4Yf9ZaMnc_D8G_U9CJ3E-WUNofJZIxfiKOxtG9fhWetGYKlQfZDXBYJaiHOp6DZ-7I",
+    image: "/images/shirt.jpg",
     gallery: [
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuB55S96v3ojET-pxG9DZN10xSGwC8afn-KVDcHQkQJ1Umh0VATT63UddMn1lO80WIrSWd4Ttf8DemWXJSmQE29Nx0-pi4ssH5C0yxPicSf1Do64WvVtAqLsAe-RrtrsVFaU7cn7xz7oF4loWsqh5xrWwsjpwADyRYDY283TwsWyyP-QEdO--f05kFSuzHpn1WX5POQ1yLJuR4Yf9ZaMnc_D8G_U9CJ3E-WUNofJZIxfiKOxtG9fhWetGYKlQfZDXBYJaiHOp6DZ-7I",
+      "",
     ],
     sizes: { S: 12, M: 24, L: 8, XL: 0 },
   },
@@ -50,8 +51,7 @@ export const products: Product[] = [
     description:
       "A tailored wool overcoat with sharp lapel construction and a high-density weave. Cut for a structured, architectural silhouette.",
     details: ["High-density wool blend", "Structured tailored fit", "Interior pocket", "Dry clean only"],
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCsM3KsAWNUNG-DbgLq7gaCKUPXHv3Sxoh8XmySXbZgwWhbXq-YFnLkwhTwCCLoX3If4nDnqKH7lmYJMjva4cL-8P-GnxDaKitC_VmT_DQ-aOBHQdjMuAqPjcwlv2YaVZhoxlUkpzOalOatBEmlpsN1vv1xmtFokQh7Dv47FKFuC91HDgMhKrljo_Gb1v2uQMqQR2hYDHh8Q80BI2tnxH38bKtvHra14PrA6uGVWXTZfEyoOOb6Qpl6qs58wzUtiYAvOGZ3DkcPeyPp",
+    image: "/images/shirt1.jpg",
     gallery: [
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCsM3KsAWNUNG-DbgLq7gaCKUPXHv3Sxoh8XmySXbZgwWhbXq-YFnLkwhTwCCLoX3If4nDnqKH7lmYJMjva4cL-8P-GnxDaKitC_VmT_DQ-aOBHQdjMuAqPjcwlv2YaVZhoxlUkpzOalOatBEmlpsN1vv1xmtFokQh7Dv47FKFuC91HDgMhKrljo_Gb1v2uQMqQR2hYDHh8Q80BI2tnxH38bKtvHra14PrA6uGVWXTZfEyoOOb6Qpl6qs58wzUtiYAvOGZ3DkcPeyPp",
     ],
@@ -68,8 +68,7 @@ export const products: Product[] = [
     description:
       "Minimalist low-top leather sneakers with a clean silhouette and a thick off-white rubber sole.",
     details: ["Full-grain leather upper", "Rubber cupsole", "Comes with spare laces"],
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDU2w72GiAGjCG58kD-J1N22A_LwWz3Q9cnZzYJXBz06uI22SazwktKojkD3z_SfW0orAzVeOS3yNekC9qdvhD1wJmor4HjxYaGKu4IJmLmSg1j_xLmaIR9AqumfXArUD3nzE8fNk0BP2fRhhfwVJB91dlHTblF1GxbTeLaofqPqiNKMIEWd62Nk1mI5IaDFkX5QdI4_mvqcJIkVgiXRZv0VfBiuKJHdSTZ0SmYtpHXKhtCaaIkNNrLBm80yBXQkd9EsOjB1rxzkDn",
+    image: "/images/shirt2.jpg",
     gallery: [],
     sizes: { S: 10, M: 20, L: 14, XL: 6 },
   },
@@ -85,7 +84,7 @@ export const products: Product[] = [
       "Wide-leg tactical trousers in ripstop nylon with hidden zip pockets and adjustable hems.",
     details: ["Ripstop technical nylon", "Hidden zip cargo pockets", "Adjustable hem cuffs"],
     image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCapysKqvt7_1FWMikvwKx6UrgsTUR0SROKG2OHLa1qp3diQnKEIiQWIdu07lxvpSH822uK9QTtR2h1PFmjaavD1CxLTO7bAR2du5T4quLJrUSe9HbE4cBg5_ItN5chAf1MAmT-fN_gemp04KZKzsiaBw3Ut829X3NFEpHXgYZCcHvj6ZgiRkfyODw0h1o3wMBI22BaWwWanHsZjhFGebUnYzIEK3_jmwfxbTpmV8XR6Q5jpXE1CTwd2ae-rBYxEXknCBnW9X0Fb2jV",
+      "/images/shirt3.jpg",
     gallery: [],
     sizes: { S: 20, M: 32, L: 18, XL: 10 },
   },
@@ -99,7 +98,7 @@ export const products: Product[] = [
     price: 32500,
     description: "A technical, insulated puffer jacket with a matte deadstock nylon shell built for cold-weather cities.",
     details: ["Deadstock matte nylon shell", "Recycled fill insulation", "Storm cuffs"],
-    image: "",
+    image: "/images/back.jpg",
     gallery: [],
     sizes: { S: 6, M: 18, L: 12, XL: 4 },
     limited: true,
@@ -114,7 +113,7 @@ export const products: Product[] = [
     price: 14200,
     description: "Garment-dyed hoodie with a soft, broken-in hand-feel from the first wear.",
     details: ["380GSM garment-dyed fleece", "Relaxed fit", "Kangaroo pocket"],
-    image: "",
+    image: "/images/back2.jpg",
     gallery: [],
     sizes: { S: 9, M: 21, L: 16, XL: 7 },
   },

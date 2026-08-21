@@ -47,7 +47,7 @@ export default function ProductsPage() {
       </div>
 
       {filtered.length === 0 && (
-        <p className="text-center text-secondary py-24">No products in this category yet.</p>
+        <p className="text-center text-secondary py-24">No products in this category yet</p>
       )}
     </div>
   );

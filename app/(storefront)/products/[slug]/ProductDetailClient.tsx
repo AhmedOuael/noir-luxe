@@ -21,7 +21,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     <div className="px-5 md:px-16 py-12">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
         {/* Gallery */}
-        <div className="aspect-[3/4] bg-surface-container overflow-hidden relative">
+        <div className="aspect-3/4 bg-surface-container overflow-hidden relative">
           {product.image ? (
             <Image src={product.image} alt={product.name} fill className="object-cover" priority />
           ) : (

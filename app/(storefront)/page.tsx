@@ -12,13 +12,13 @@ export default function HomePage() {
       {/* Hero */}
       <section className="relative h-[92vh] w-full overflow-hidden">
         <Image
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdKtin68mPFzO9sym2Ob9V7XjLd6BsNZp9AjbDXXjFzPIoSjfoL0SRc88-tMkC9pvot5EufIYwBTWjGMe137-VcvlepVMh76Ei3xiTdobYStR4seuAlBdXYsR_1rLma3MBw2KrVH71Kn-hsGPGm3qOkj_UzMK5JnEDrajWiqWLtJrk4fC7KGsrbbRZDhYQvHZ1TaCCzAcoQCLLajZJBEJjFVDCeX7_oMr8VCAQF_KmX4TynDU0Jl60yuCFgJsXD2KaVppdu11q0Rsx"
-          alt="NOIR Autumn/Winter collection editorial"
+          src="/images/back2.jpg"
+          alt="The hero section image"
           fill
           priority
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
+        <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-black/40" />
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-5">
           <p className="text-xs tracking-[0.3em] text-white uppercase mb-4">Autumn / Winter 2026</p>
           <h1 className="font-display text-4xl md:text-6xl text-white mb-6 max-w-4xl">
@@ -80,9 +80,9 @@ export default function HomePage() {
               Read the Full Manifesto
             </Link>
           </div>
-          <div className="aspect-[4/5] overflow-hidden">
+          <div className="aspect-4/5 overflow-hidden">
             <Image
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBS0LVlFwuWA88piskq8SHBhDJ8V7n9Dw97Hm8PdCME0r0wknXc8EQnKY1zxsRR062-ZzSoevETWBxNspH1zb6p99smxk5A6pjmMwU0YtMvstpYQPd2BNX2VuM2GXqjZKdvKQ9pjzMn39aYj7Nz5dh_J4YOjMekrLzrQssJ29rYLFuMXDYQEozG_XUjZck-LQDV1Wbz_mF-9upSoHivncq_W5oSmVvcySoXYd4OzGe38ha9rMz_2b0ogdseoQoEIcDMwx39kii8O1"
+              src="/images/product1.jpg"
               alt="Designer portrait in the atelier"
               width={800}
               height={1000}

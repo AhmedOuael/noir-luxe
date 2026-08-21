@@ -5,7 +5,7 @@ import type { Product } from "@/lib/products";
 export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/products/${product.slug}`} className="group block">
-      <div className="aspect-[3/4] overflow-hidden mb-4 bg-surface-container relative">
+      <div className="aspect-3/4 overflow-hidden mb-4 bg-surface-container relative">
         {product.image ? (
           <Image
             src={product.image}

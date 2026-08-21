@@ -13,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className="min-h-screen antialiased bg-surface text-on-surface">{children}</body>
+      <body className="min-h-screen antialiased bg-surface text-on-surface" suppressHydrationWarning>{children}</body>
     </html>
   );
 }
