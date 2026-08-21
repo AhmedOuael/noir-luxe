@@ -12,11 +12,11 @@ export default function HomePage() {
       {/* Hero */}
       <section className="relative h-[92vh] w-full overflow-hidden">
         <Image
-          src="/images/backtest.jpg"
+          src="/images/backtest.PNG"
           alt="The hero section image"
           fill
           priority
-          className="object-cover"
+          className="object-cover object-[29%_center] md:object-center"
         />
         <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-black/40" />
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-5">
