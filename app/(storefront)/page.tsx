@@ -12,7 +12,7 @@ export default function HomePage() {
       {/* Hero */}
       <section className="relative h-[92vh] w-full overflow-hidden">
         <Image
-          src="/images/back2.jpg"
+          src="/images/backtest.jpg"
           alt="The hero section image"
           fill
           priority
