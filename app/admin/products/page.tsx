@@ -104,7 +104,7 @@ export default function AdminProductsPage() {
           </thead>
           <tbody>
             {products.map((p) => (
-              <tr key={p.id} className="border-b border-ink-border last:border-0 hover:bg-white/[0.02]">
+              <tr key={p.id} className="border-b border-ink-border last:border-0 hover:bg-white/2">
                 <td className="px-6 py-4">
                   <p className="font-medium">{p.name}</p>
                   <p className="text-white/40 text-xs">{p.colorName}</p>
