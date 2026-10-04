@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            BigInt               @id @default(autoincrement())
+  email         String               @unique
+  passwordHash  String
+  role          String               @default("ADMIN")
+  createdAt     DateTime             @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime             @updatedAt @db.Timestamptz(3)
+  statusHistory OrderStatusHistory[]
+}
+
+model Product {
+  id          BigInt            @id @default(autoincrement())
+  name        String
+  description String?
+  active      Boolean           @default(true)
+  createdAt   DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime          @updatedAt @db.Timestamptz(3)
+  categories  ProductCategory[]
+  images      ProductImage[]
+  variants    ProductVariant[]
+}
+
+model Category {
+  id        BigInt            @id @default(autoincrement())
+  name      String            @unique
+  active    Boolean           @default(true)
+  createdAt DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime          @updatedAt @db.Timestamptz(3)
+  products  ProductCategory[]
+}
+
+model ProductCategory {
+  productId  BigInt
+  categoryId BigInt
+  category   Category @relation(fields: [categoryId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([productId, categoryId])
+  @@index([categoryId, productId])
+}
+
+model ProductImage {
+  id           BigInt   @id @default(autoincrement())
+  productId    BigInt
+  imageUrl     String
+  isPrimary    Boolean  @default(false)
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, displayOrder])
+}
+
+model ProductVariant {
+  id            BigInt   @id @default(autoincrement())
+  productId     BigInt
+  color         String?
+  size          String?
+  sku           String   @unique
+  price         Decimal  @db.Decimal(10, 2)
+  physicalStock Int      @default(0)
+  reservedStock Int      @default(0)
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime @updatedAt @db.Timestamptz(3)
+
+  orderItems OrderItem[]
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model Wilaya {
+  id        BigInt     @id @default(autoincrement())
+  code      String     @unique
+  name      String     @unique
+  active    Boolean    @default(true)
+  createdAt DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime   @updatedAt @db.Timestamptz(3)
+  customers Customer[]
+}
+
+model Customer {
+  id        BigInt   @id @default(autoincrement())
+  fullName  String
+  phone     String
+  wilayaId  BigInt
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  wilaya    Wilaya   @relation(fields: [wilayaId], references: [id])
+  orders    Order[]
+
+  @@index([phone])
+  @@index([wilayaId])
+}
+
+model Order {
+  id            BigInt               @id @default(autoincrement())
+  customerId    BigInt
+  subtotal      Decimal              @db.Decimal(10, 2)
+  deliveryFee   Decimal              @db.Decimal(10, 2)
+  discount      Decimal              @default(0) @db.Decimal(10, 2)
+  total         Decimal              @db.Decimal(10, 2)
+  status        String               @default("NEW")
+  createdAt     DateTime             @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime             @updatedAt @db.Timestamptz(3)
+  customer      Customer             @relation(fields: [customerId], references: [id])
+  items         OrderItem[]
+  statusHistory OrderStatusHistory[]
+
+  @@index([customerId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([status, createdAt])
+}
+
+model OrderItem {
+  id                    BigInt         @id @default(autoincrement())
+  orderId               BigInt
+  variantId             BigInt
+  quantity              Int
+  priceAtPurchase       Decimal        @db.Decimal(10, 2)
+  productNameAtPurchase String
+  colorAtPurchase       String?
+  sizeAtPurchase        String?
+  createdAt             DateTime       @default(now()) @db.Timestamptz(3)
+  order                 Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant               ProductVariant @relation(fields: [variantId], references: [id])
+
+  @@index([orderId])
+  @@index([variantId])
+}
+
+model OrderStatusHistory {
+  id            BigInt   @id @default(autoincrement())
+  orderId       BigInt
+  status        String
+  changedBy     BigInt?
+  createdAt     DateTime @default(now()) @db.Timestamptz(3)
+  changedByUser User?    @relation(fields: [changedBy], references: [id])
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, createdAt])
+  @@index([changedBy])
+}

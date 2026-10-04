@@ -54,7 +54,7 @@ pids
 # Package management
 
 .npm
-package-lock.json
+
 yarn.lock
 .yarn-integrity
 .yarn/cache
@@ -123,3 +123,5 @@ out/
 .env.development.local
 .env.test.local
 .env.production.local
+
+/lib/generated/prisma
