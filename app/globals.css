@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@fontsource/playfair-display/400.css";
 @import "@fontsource/playfair-display/700.css";
 @import "@fontsource/playfair-display/700-italic.css";
 @import "@fontsource/inter/400.css";
@@ -36,6 +37,32 @@
   --color-error: #ba1a1a;
   --color-on-error: #ffffff;
 
+  /* Hero: warm tones taken from the campaign image's light */
+  --color-umber: #1c1712; /* behind the photo while it loads */
+  --color-ivory: #efe6d6; /* hero text, ~7-10:1 on the dark wall */
+  --color-ivory-muted: #d6cab5;
+
+  /* Hero: the photo fades up from the dark, then the text, in order (no zoom) */
+  --animate-hero-photo: hero-photo 1.4s ease-out both;
+  --animate-hero-text: hero-text 0.9s ease-out both;
+
+  @keyframes hero-photo {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes hero-text {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
   /* Admin dashboard is dark-mode by default */
   --color-ink: #111111;
   --color-ink-panel: #1a1a1a;
@@ -64,6 +91,8 @@
   }
   h1, h2, h3, h4, .font-display {
     font-family: var(--font-display);
+    /* Playfair 700 is the brand weight (logo, headings); 400 is opted into per element. */
+    font-weight: 700;
   }
   ::selection {
     background-color: var(--color-primary);

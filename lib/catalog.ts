@@ -132,6 +132,31 @@ export async function getCartVariants(variantIds: bigint[]): Promise<Record<stri
   );
 }
 
+/** One size of a product for "Buy now", priced and stocked from the DB. Not cached. */
+export async function getBuyNowItem(variantIdParam: string) {
+  if (!/^\d{1,18}$/.test(variantIdParam)) return null;
+  const v = await prisma.productVariant.findFirst({
+    where: { id: BigInt(variantIdParam), active: true, product: { active: true } },
+    include: {
+      product: {
+        select: { name: true, slug: true, images: { orderBy: [{ isPrimary: "desc" }, { displayOrder: "asc" }], take: 1 } },
+      },
+    },
+  });
+  if (!v) return null;
+  return {
+    variantId: v.id.toString(),
+    slug: v.product.slug,
+    name: v.product.name,
+    size: v.size,
+    color: v.color,
+    price: v.price.toNumber(),
+    image: v.product.images[0] ? imageUrl(v.product.images[0].imageUrl) : null,
+    available: Math.max(0, v.physicalStock - v.reservedStock),
+    quantity: 1,
+  };
+}
+
 export const getCategories = cache(async (): Promise<string[]> => {
   const rows = await prisma.category.findMany({
     where: { active: true, products: { some: { product: listable } } },

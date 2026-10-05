@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import NewsletterForm from "@/components/NewsletterForm";
+import Hero from "@/components/Hero";
 import { getProducts } from "@/lib/catalog";
 
 // Stock/prices change with orders; re-render at most once a minute.
@@ -12,32 +13,7 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* Hero */}
-      <section className="relative h-[92vh] w-full overflow-hidden">
-        <Image
-          src="/images/backtest.PNG"
-          alt="The hero section image"
-          fill
-          priority
-          className="object-cover object-[29%_center] md:object-center"
-        />
-        <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-black/40" />
-        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-5">
-          <p className="text-xs tracking-[0.3em] text-white uppercase mb-4">Autumn / Winter 2026</p>
-          <h1 className="font-display text-4xl md:text-6xl text-white mb-6 max-w-4xl">
-            ESSENTIAL COLLECTION 2026
-          </h1>
-          <p className="text-white/80 text-lg mb-10 max-w-xl mx-auto">
-            Engineered silhouettes that redefine modern luxury through structural integrity and archival research.
-          </p>
-          <Link
-            href="/products"
-            className="bg-white text-black px-10 py-4 rounded-full text-sm font-medium tracking-label uppercase hover:bg-black hover:text-white transition-all duration-500 scale-100 hover:scale-105 active:scale-95"
-          >
-            Explore Collection
-          </Link>
-        </div>
-      </section>
+      <Hero />
 
       {/* Curated edit */}
       <section className="py-24 md:py-32 px-5 md:px-16">

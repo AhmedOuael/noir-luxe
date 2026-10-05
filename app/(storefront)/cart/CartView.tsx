@@ -6,6 +6,7 @@ import { Minus, Plus, X } from "lucide-react";
 import { useCart, type CartItem } from "@/components/cart/useCart";
 import { useCartSync } from "@/components/cart/useCartSync";
 import { MAX_QTY_PER_ITEM } from "@/lib/order-limits";
+import { formatDZD } from "@/lib/format";
 
 export function variantLabel(item: Pick<CartItem, "size" | "color">) {
   return [item.color, item.size].filter(Boolean).join(" / ");
@@ -58,7 +59,7 @@ export function CartLine({ item, editable }: { item: CartItem; editable: boolean
             <span className="text-sm text-secondary">Qty {item.quantity}</span>
           )}
           <span className="text-sm font-semibold whitespace-nowrap">
-            {(item.price * item.quantity).toLocaleString()} DZD
+            {formatDZD(item.price * item.quantity)}
           </span>
         </div>
       </div>
@@ -101,7 +102,7 @@ export default function CartView() {
         <h2 className="text-xs font-medium tracking-label uppercase mb-6">Summary</h2>
         <div className="flex justify-between text-sm mb-3">
           <span className="text-secondary">Subtotal</span>
-          <span className="font-semibold">{subtotal.toLocaleString()} DZD</span>
+          <span className="font-semibold">{formatDZD(subtotal)}</span>
         </div>
         <div className="flex justify-between text-sm mb-8">
           <span className="text-secondary">Delivery</span>

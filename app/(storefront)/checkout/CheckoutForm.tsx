@@ -3,11 +3,12 @@
 import { useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCart } from "@/components/cart/useCart";
+import { useCart, type CartItem } from "@/components/cart/useCart";
 import { useCartSync } from "@/components/cart/useCartSync";
 import { CartLine } from "../cart/CartView";
 import type { WilayaOption } from "@/lib/delivery";
 import { placeOrder, quoteDelivery } from "./actions";
+import { formatDZD } from "@/lib/format";
 
 type DeliveryType = "HOME" | "STOP_DESK";
 type Field = "fullName" | "phone" | "wilaya" | "deliveryType" | "items";
@@ -20,10 +21,18 @@ const DELIVERY_OPTIONS: { value: DeliveryType; label: string; hint: string }[] =
 const inputClass =
   "w-full bg-transparent border border-outline-variant px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors";
 
-export default function CheckoutForm({ wilayas }: { wilayas: WilayaOption[] }) {
+/**
+ * Checks out the bag, or with `buyNow` just that one item ("Buy now" on a
+ * product page). Buy-now leaves the bag untouched.
+ */
+export default function CheckoutForm({ wilayas, buyNow }: { wilayas: WilayaOption[]; buyNow?: CartItem }) {
   const router = useRouter();
-  const { items, subtotal, hydrated, clear } = useCart();
-  const { syncing, notice } = useCartSync();
+  const cart = useCart();
+  const sync = useCartSync(!buyNow);
+  const items = buyNow ? [buyNow] : cart.items;
+  const subtotal = buyNow ? buyNow.price * buyNow.quantity : cart.subtotal;
+  const hydrated = buyNow ? true : cart.hydrated;
+  const { syncing, notice } = sync;
 
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
@@ -97,7 +106,7 @@ export default function CheckoutForm({ wilayas }: { wilayas: WilayaOption[] }) {
         });
         if (result.ok) {
           setPlaced(true);
-          clear();
+          if (!buyNow) cart.clear();
           router.replace(`/checkout/success?order=${result.orderId}`);
         } else {
           setError({ message: result.error, field: result.field });
@@ -201,7 +210,7 @@ export default function CheckoutForm({ wilayas }: { wilayas: WilayaOption[] }) {
                     <span className="flex justify-between gap-2 text-sm font-medium">
                       {opt.label}
                       <span className="font-semibold whitespace-nowrap">
-                        {!wilayaId ? "" : quoting ? "…" : typeof optFee === "number" ? `${optFee.toLocaleString()} DZD` : "Unavailable"}
+                        {!wilayaId ? "" : quoting ? "…" : typeof optFee === "number" ? formatDZD(optFee) : "Unavailable"}
                       </span>
                     </span>
                     <span className="block text-xs text-secondary mt-1">{opt.hint}</span>
@@ -228,15 +237,15 @@ export default function CheckoutForm({ wilayas }: { wilayas: WilayaOption[] }) {
         <div className="pt-6 space-y-3 text-sm">
           <div className="flex justify-between">
             <span className="text-secondary">Subtotal</span>
-            <span>{subtotal.toLocaleString()} DZD</span>
+            <span>{formatDZD(subtotal)}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-secondary">Delivery</span>
-            <span>{typeof fee === "number" ? `${fee.toLocaleString()} DZD` : "Choose your wilaya"}</span>
+            <span>{typeof fee === "number" ? formatDZD(fee) : "Choose your wilaya"}</span>
           </div>
           <div className="flex justify-between pt-3 border-t border-outline-variant text-base font-semibold">
             <span>Total</span>
-            <span>{total !== null ? `${total.toLocaleString()} DZD` : "—"}</span>
+            <span>{total !== null ? formatDZD(total) : "—"}</span>
           </div>
         </div>
 
@@ -244,8 +253,8 @@ export default function CheckoutForm({ wilayas }: { wilayas: WilayaOption[] }) {
           <p className="text-error text-sm mt-6">
             {error.message}{" "}
             {error.field === "items" && (
-              <Link href="/cart" className="underline">
-                Review your bag
+              <Link href={buyNow ? `/products/${buyNow.slug}` : "/cart"} className="underline">
+                {buyNow ? "Back to the product" : "Review your bag"}
               </Link>
             )}
           </p>

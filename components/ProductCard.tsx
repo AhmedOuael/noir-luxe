@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { CatalogProduct } from "@/lib/catalog";
+import { formatDZD } from "@/lib/format";
 
 export default function ProductCard({ product }: { product: CatalogProduct }) {
   return (
@@ -25,14 +26,12 @@ export default function ProductCard({ product }: { product: CatalogProduct }) {
           </span>
         )}
       </div>
-      <div className="flex justify-between items-start">
-        <div>
-          <h4 className="font-display text-lg mb-1">{product.name}</h4>
-          <p className="text-secondary text-xs tracking-label uppercase">{product.colorName}</p>
-        </div>
-        <span className="text-sm font-semibold whitespace-nowrap">
-          {product.price.toLocaleString()} DZD
-        </span>
+      {/* Name gets the full width; color and price share a line from sm up and
+          stack on phones, so a wrapping name never pushes the price out of line. */}
+      <h4 className="font-display text-lg leading-snug">{product.name}</h4>
+      <div className="mt-1.5 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
+        <p className="text-secondary text-xs tracking-label uppercase">{product.colorName}</p>
+        <span className="text-sm font-semibold whitespace-nowrap">{formatDZD(product.price)}</span>
       </div>
     </Link>
   );

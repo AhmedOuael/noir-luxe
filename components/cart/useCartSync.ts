@@ -9,14 +9,14 @@ import { useCart, type CartItem } from "./useCart";
  * Re-checks the cart against current prices/stock once per page visit.
  * Returns a message when something in the bag had to change.
  */
-export function useCartSync() {
+export function useCartSync(enabled = true) {
   const { items, hydrated, updateItems } = useCart();
   const [done, setDone] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const started = useRef(false);
 
   useEffect(() => {
-    if (!hydrated || started.current || items.length === 0) return;
+    if (!enabled || !hydrated || started.current || items.length === 0) return;
     started.current = true;
 
     refreshCart(items.map((i) => i.variantId))
@@ -46,7 +46,7 @@ export function useCartSync() {
         // Offline / server error: keep the local cart; the order is re-validated anyway.
       })
       .finally(() => setDone(true));
-  }, [hydrated, items, updateItems]);
+  }, [enabled, hydrated, items, updateItems]);
 
-  return { syncing: hydrated && !done && items.length > 0, notice };
+  return { syncing: enabled && hydrated && !done && items.length > 0, notice: enabled ? notice : null };
 }
