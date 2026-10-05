@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X, Search, ShoppingBag, User } from "lucide-react";
+import { useCart } from "@/components/cart/useCart";
 
 const links = [
   { href: "/products", label: "Shop" },
@@ -10,8 +11,22 @@ const links = [
   { href: "/contact", label: "Contact" },
 ];
 
-export default function Header({ cartCount = 0 }: { cartCount?: number }) {
+function CartLink({ count, onClick }: { count: number; onClick?: () => void }) {
+  return (
+    <Link href="/cart" aria-label="Cart" onClick={onClick} className="relative text-primary hover:scale-95 active:scale-90 transition-transform">
+      <ShoppingBag size={20} />
+      {count > 0 && (
+        <span className="absolute -top-1.5 -right-1.5 bg-primary text-on-primary text-[9px] w-4 h-4 flex items-center justify-center rounded-full">
+          {count}
+        </span>
+      )}
+    </Link>
+  );
+}
+
+export default function Header() {
   const [open, setOpen] = useState(false);
+  const { count: cartCount } = useCart();
 
   return (
     <header className="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-outline-variant/40">
@@ -43,19 +58,17 @@ export default function Header({ cartCount = 0 }: { cartCount?: number }) {
           NOIR
         </Link>
 
+        {/* Mobile: cart stays reachable without opening the menu */}
+        <div className="md:hidden">
+          <CartLink count={cartCount} />
+        </div>
+
         {/* Right: actions */}
         <div className="hidden md:flex items-center justify-end gap-6 flex-1">
           <button aria-label="Search" className="text-primary hover:scale-95 active:scale-90 transition-transform">
             <Search size={20} />
           </button>
-          <Link href="/cart" aria-label="Cart" className="relative text-primary hover:scale-95 active:scale-90 transition-transform">
-            <ShoppingBag size={20} />
-            {cartCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-primary text-on-primary text-[9px] w-4 h-4 flex items-center justify-center rounded-full">
-                {cartCount}
-              </span>
-            )}
-          </Link>
+          <CartLink count={cartCount} />
           <Link href="/admin" aria-label="Account" className="text-primary hover:scale-95 active:scale-90 transition-transform">
             <User size={20} />
           </Link>
@@ -77,7 +90,7 @@ export default function Header({ cartCount = 0 }: { cartCount?: number }) {
           ))}
           <div className="flex items-center gap-6 pt-4 border-t border-outline-variant/40">
             <Search size={20} />
-            <ShoppingBag size={20} />
+            <CartLink count={cartCount} onClick={() => setOpen(false)} />
             <User size={20} />
           </div>
         </div>

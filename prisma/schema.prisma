@@ -22,6 +22,8 @@ model Product {
   slug        String            @unique
   name        String
   description String?
+  details     String[]          @default([])
+  limited     Boolean           @default(false)
   active      Boolean           @default(true)
   createdAt   DateTime          @default(now()) @db.Timestamptz(3)
   updatedAt   DateTime          @updatedAt @db.Timestamptz(3)

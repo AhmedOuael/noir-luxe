@@ -1,18 +1,10 @@
-"use client";
+import { getCategories, getProducts } from "@/lib/catalog";
+import ProductGrid from "./ProductGrid";
 
-import { useMemo, useState } from "react";
-import ProductCard from "@/components/ProductCard";
-import { getAllProducts, getCategories } from "@/lib/products";
+export const revalidate = 60;
 
-export default function ProductsPage() {
-  const all = getAllProducts();
-  const categories = getCategories();
-  const [active, setActive] = useState<string>("All");
-
-  const filtered = useMemo(
-    () => (active === "All" ? all : all.filter((p) => p.category === active)),
-    [active, all]
-  );
+export default async function ProductsPage() {
+  const [products, categories] = await Promise.all([getProducts(), getCategories()]);
 
   return (
     <div className="px-5 md:px-16 py-16">
@@ -21,34 +13,7 @@ export default function ProductsPage() {
         <h1 className="font-display text-3xl md:text-5xl">Essential Catalog</h1>
       </div>
 
-      {/* Filter chips */}
-      <div className="flex flex-wrap gap-3 mb-12 hide-scrollbar overflow-x-auto pb-2">
-        {["All", ...categories].map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActive(cat)}
-            className={`px-5 py-2 rounded-full text-xs font-medium tracking-label uppercase border transition-colors whitespace-nowrap ${
-              active === cat
-                ? "border-primary bg-primary text-on-primary"
-                : "border-outline-variant text-secondary hover:border-primary hover:text-primary"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      <p className="text-sm text-secondary mb-8">Showing {filtered.length} of {all.length} items.</p>
-
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-        {filtered.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
-      </div>
-
-      {filtered.length === 0 && (
-        <p className="text-center text-secondary py-24">No products in this category yet</p>
-      )}
+      <ProductGrid products={products} categories={categories} />
     </div>
   );
 }

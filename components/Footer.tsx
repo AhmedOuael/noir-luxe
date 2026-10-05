@@ -32,15 +32,8 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="text-xs font-semibold tracking-label uppercase mb-6">Secure Payments</h4>
-          <p className="text-sm text-secondary mb-6">We support local and international payment methods.</p>
-          <div className="grid grid-cols-4 gap-3">
-            {["CIB", "BaridiMob", "eCCP", "COD"].map((m) => (
-              <div key={m} className="h-9 bg-surface-container rounded-sm flex items-center justify-center text-[9px] font-bold">
-                {m}
-              </div>
-            ))}
-          </div>
+          <h4 className="text-xs font-semibold tracking-label uppercase mb-6">Payment</h4>
+          <p className="text-sm text-secondary">Cash on delivery — pay when your order arrives.</p>
           <p className="mt-6 text-xs text-secondary italic">Shipping nationwide via Yalidine — 58 wilayas covered.</p>
         </div>
       </div>

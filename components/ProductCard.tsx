@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { Product } from "@/lib/products";
+import type { CatalogProduct } from "@/lib/catalog";
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product }: { product: CatalogProduct }) {
   return (
     <Link href={`/products/${product.slug}`} className="group block">
       <div className="aspect-3/4 overflow-hidden mb-4 bg-surface-container relative">

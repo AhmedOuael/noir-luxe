@@ -111,7 +111,7 @@ export default function AboutPage() {
             </div>
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center">💳</div>
-              <p className="text-xs font-medium tracking-label uppercase">BaridiMob, CIB &amp; eCCP Ready</p>
+              <p className="text-xs font-medium tracking-label uppercase">Cash on Delivery</p>
             </div>
           </div>
         </div>

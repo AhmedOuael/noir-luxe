@@ -2,10 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import NewsletterForm from "@/components/NewsletterForm";
-import { getAllProducts } from "@/lib/products";
+import { getProducts } from "@/lib/catalog";
 
-export default function HomePage() {
-  const featured = getAllProducts().slice(0, 4);
+// Stock/prices change with orders; re-render at most once a minute.
+export const revalidate = 60;
+
+export default async function HomePage() {
+  const featured = (await getProducts()).slice(0, 4);
 
   return (
     <div>

@@ -2,17 +2,33 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import type { Product, Size } from "@/lib/products";
+import type { CatalogProduct, CatalogVariant } from "@/lib/catalog";
+import { useCart } from "@/components/cart/useCart";
 import { ChevronDown } from "lucide-react";
 
-export default function ProductDetailClient({ product }: { product: Product }) {
-  const sizeEntries = Object.entries(product.sizes) as [Size, number][];
-  const [selectedSize, setSelectedSize] = useState<Size | null>(null);
+export default function ProductDetailClient({ product }: { product: CatalogProduct }) {
+  const { addItem } = useCart();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [openSection, setOpenSection] = useState<string | null>("details");
   const [added, setAdded] = useState(false);
 
+  const selected = product.variants.find((v) => v.id === selectedId) ?? null;
+  const multiColor = new Set(product.variants.map((v) => v.color)).size > 1;
+  const variantLabel = (v: CatalogVariant) =>
+    multiColor ? [v.color, v.size].filter(Boolean).join(" / ") : v.size ?? v.color ?? "One size";
+
   const handleAddToBag = () => {
-    if (!selectedSize) return;
+    if (!selected) return;
+    addItem({
+      variantId: selected.id,
+      slug: product.slug,
+      name: product.name,
+      size: selected.size,
+      color: selected.color,
+      price: selected.price,
+      image: product.image,
+      available: selected.available,
+    });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
@@ -34,11 +50,11 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         {/* Info */}
         <div className="md:pt-4">
           <p className="text-xs tracking-label uppercase text-secondary mb-3">
-            {product.category.toUpperCase()} / SKU {product.sku}
+            {[product.category?.toUpperCase(), selected && `SKU ${selected.sku}`].filter(Boolean).join(" / ")}
           </p>
           <h1 className="font-display text-3xl md:text-4xl mb-3">{product.name}</h1>
           <p className="text-sm text-secondary mb-6">{product.colorName}</p>
-          <p className="text-xl font-semibold mb-8">{product.price.toLocaleString()} DZD</p>
+          <p className="text-xl font-semibold mb-8">{(selected?.price ?? product.price).toLocaleString()} DZD</p>
 
           <p className="text-on-surface-variant mb-8 max-w-md">{product.description}</p>
 
@@ -48,16 +64,16 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             <button className="text-xs text-secondary underline">Size Guide</button>
           </div>
           <div className="flex flex-wrap gap-3 mb-8">
-            {sizeEntries.map(([size, stock]) => (
+            {product.variants.map((v) => (
               <button
-                key={size}
-                disabled={stock === 0}
-                onClick={() => setSelectedSize(size)}
-                className={`w-14 h-12 flex items-center justify-center border text-sm transition-colors
-                  ${stock === 0 ? "border-outline-variant text-outline-variant line-through cursor-not-allowed" : "border-outline-variant hover:border-primary"}
-                  ${selectedSize === size ? "bg-primary text-on-primary border-primary" : ""}`}
+                key={v.id}
+                disabled={v.available === 0}
+                onClick={() => setSelectedId(v.id)}
+                className={`min-w-14 h-12 px-3 flex items-center justify-center border text-sm transition-colors
+                  ${v.available === 0 ? "border-outline-variant text-outline-variant line-through cursor-not-allowed" : "border-outline-variant hover:border-primary"}
+                  ${selectedId === v.id ? "bg-primary text-on-primary border-primary" : ""}`}
               >
-                {size}
+                {variantLabel(v)}
               </button>
             ))}
           </div>
@@ -65,12 +81,10 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           <div className="flex flex-col gap-3 mb-10">
             <button
               onClick={handleAddToBag}
+              disabled={!selected}
               className="w-full bg-primary text-on-primary py-4 rounded-full text-sm font-medium tracking-label uppercase hover:opacity-90 transition-opacity disabled:opacity-40"
             >
-              {added ? "Added to Bag ✓" : "Add to Bag"}
-            </button>
-            <button className="w-full border border-primary py-4 rounded-full text-sm font-medium tracking-label uppercase hover:bg-surface-container transition-colors">
-              Buy with BaridiMob
+              {added ? "Added to Bag ✓" : selected ? "Add to Bag" : "Select a Size"}
             </button>
           </div>
 
