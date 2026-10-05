@@ -19,6 +19,7 @@ model User {
 
 model Product {
   id          BigInt            @id @default(autoincrement())
+  slug        String            @unique
   name        String
   description String?
   active      Boolean           @default(true)
@@ -88,6 +89,22 @@ model Wilaya {
   createdAt DateTime   @default(now()) @db.Timestamptz(3)
   updatedAt DateTime   @updatedAt @db.Timestamptz(3)
   customers Customer[]
+  communes  Commune[]
+  orders    Order[]
+}
+
+// Filled from the delivery company's commune list.
+model Commune {
+  id        BigInt   @id @default(autoincrement())
+  wilayaId  BigInt
+  name      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  wilaya    Wilaya   @relation(fields: [wilayaId], references: [id])
+  orders    Order[]
+
+  @@unique([wilayaId, name])
 }
 
 model Customer {
@@ -107,6 +124,12 @@ model Customer {
 model Order {
   id            BigInt               @id @default(autoincrement())
   customerId    BigInt
+  // Delivery destination is per order: a returning customer may ship elsewhere.
+  wilayaId      BigInt
+  deliveryType  String // HOME | STOP_DESK, chosen at checkout
+  // Filled by the confirmation team during the call.
+  communeId     BigInt?
+  address       String?
   subtotal      Decimal              @db.Decimal(10, 2)
   deliveryFee   Decimal              @db.Decimal(10, 2)
   discount      Decimal              @default(0) @db.Decimal(10, 2)
@@ -115,10 +138,14 @@ model Order {
   createdAt     DateTime             @default(now()) @db.Timestamptz(3)
   updatedAt     DateTime             @updatedAt @db.Timestamptz(3)
   customer      Customer             @relation(fields: [customerId], references: [id])
+  wilaya        Wilaya               @relation(fields: [wilayaId], references: [id])
+  commune       Commune?             @relation(fields: [communeId], references: [id], onDelete: Restrict)
   items         OrderItem[]
   statusHistory OrderStatusHistory[]
 
   @@index([customerId])
+  @@index([wilayaId])
+  @@index([communeId])
   @@index([status])
   @@index([createdAt])
   @@index([status, createdAt])
