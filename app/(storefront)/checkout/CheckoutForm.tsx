@@ -46,7 +46,13 @@ export default function CheckoutForm({ wilayas }: { wilayas: WilayaOption[] }) {
     setQuoting(true);
     quoteDelivery(id)
       .then((quote) => {
-        if (request === quoteRequest.current) setFees(quote); // ignore answers for an older pick
+        if (request !== quoteRequest.current) return; // ignore answers for an older pick
+        setFees(quote);
+        // A disabled radio stays checked, so move off a type this wilaya doesn't offer.
+        setDeliveryType((current) => {
+          const other: DeliveryType = current === "HOME" ? "STOP_DESK" : "HOME";
+          return quote[current] === null && quote[other] !== null ? other : current;
+        });
       })
       .catch(() => {
         if (request === quoteRequest.current) setFees({});
@@ -58,6 +64,7 @@ export default function CheckoutForm({ wilayas }: { wilayas: WilayaOption[] }) {
 
   const fee = wilayaId ? fees[deliveryType] : undefined;
   const total = typeof fee === "number" ? subtotal + fee : null;
+  const noDelivery = !!wilayaId && !quoting && fees.HOME === null && fees.STOP_DESK === null;
 
   if (!hydrated || placed) return <p className="text-secondary py-24 text-center">Loading…</p>;
 
@@ -159,7 +166,7 @@ export default function CheckoutForm({ wilayas }: { wilayas: WilayaOption[] }) {
             </label>
 
             {/* Honeypot: hidden from people, bots tend to fill it in. */}
-            <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
+            <div aria-hidden="true" className="absolute left-[-9999px] w-px h-px overflow-hidden">
               <label>
                 Website
                 <input tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
@@ -246,12 +253,16 @@ export default function CheckoutForm({ wilayas }: { wilayas: WilayaOption[] }) {
 
         <button
           type="submit"
-          disabled={submitting || syncing || quoting}
+          disabled={submitting || syncing || quoting || noDelivery}
           className="mt-8 w-full bg-primary text-on-primary py-4 rounded-full text-sm font-medium tracking-label uppercase hover:opacity-90 transition-opacity disabled:opacity-40"
         >
           {submitting ? "Placing order…" : "Place order"}
         </button>
-        <p className="text-xs text-secondary text-center mt-4">Pay in cash when you receive your order</p>
+        {noDelivery ? (
+          <p className="text-xs text-error text-center mt-4">We can&apos;t deliver to this wilaya at the moment.</p>
+        ) : (
+          <p className="text-xs text-secondary text-center mt-4">Pay in cash when you receive your order</p>
+        )}
       </aside>
     </form>
   );

@@ -14,7 +14,7 @@ export default function ProductGrid({
   const [active, setActive] = useState<string>("All");
 
   const filtered = useMemo(
-    () => (active === "All" ? products : products.filter((p) => p.category === active)),
+    () => (active === "All" ? products : products.filter((p) => p.categories.includes(active))),
     [active, products]
   );
 

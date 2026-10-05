@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, Search, ShoppingBag, User } from "lucide-react";
+import { Menu, X, Search, ShoppingBag } from "lucide-react";
 import { useCart } from "@/components/cart/useCart";
 
 const links = [
@@ -69,9 +69,6 @@ export default function Header() {
             <Search size={20} />
           </button>
           <CartLink count={cartCount} />
-          <Link href="/admin" aria-label="Account" className="text-primary hover:scale-95 active:scale-90 transition-transform">
-            <User size={20} />
-          </Link>
         </div>
       </nav>
 
@@ -91,7 +88,6 @@ export default function Header() {
           <div className="flex items-center gap-6 pt-4 border-t border-outline-variant/40">
             <Search size={20} />
             <CartLink count={cartCount} onClick={() => setOpen(false)} />
-            <User size={20} />
           </div>
         </div>
       )}

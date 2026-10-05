@@ -110,6 +110,9 @@ export default function CartView() {
         <Link
           href="/checkout"
           aria-disabled={syncing}
+          onClick={(event) => {
+            if (syncing) event.preventDefault();
+          }}
           className={`block text-center w-full bg-primary text-on-primary py-4 rounded-full text-sm font-medium tracking-label uppercase hover:opacity-90 transition-opacity ${syncing ? "pointer-events-none opacity-40" : ""}`}
         >
           Checkout

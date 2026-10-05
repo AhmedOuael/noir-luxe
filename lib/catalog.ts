@@ -20,7 +20,7 @@ export type CatalogProduct = {
   name: string;
   description: string | null;
   details: string[];
-  category: string | null;
+  categories: string[]; // all active categories, alphabetical
   colorName: string | null;
   price: number; // lowest active variant price
   image: string | null;
@@ -55,8 +55,11 @@ function toCatalogProduct(p: ProductRow): CatalogProduct {
       available: Math.max(0, v.physicalStock - v.reservedStock),
     }))
     .sort((a, b) => sizeRank(a.size) - sizeRank(b.size));
-  const images = p.images.map((img) => imageUrl(img.imageUrl));
-  const activeCategory = p.categories.find((pc) => pc.category.active);
+  const images = p.images.map((img) => imageUrl(img.imageUrl)).filter((url): url is string => url !== null);
+  const categories = p.categories
+    .filter((pc) => pc.category.active)
+    .map((pc) => pc.category.name)
+    .sort((a, b) => a.localeCompare(b));
 
   return {
     id: p.id.toString(),
@@ -64,7 +67,7 @@ function toCatalogProduct(p: ProductRow): CatalogProduct {
     name: p.name,
     description: p.description,
     details: p.details,
-    category: activeCategory?.category.name ?? null,
+    categories,
     colorName: variants.find((v) => v.color)?.color ?? null,
     price: variants.length ? Math.min(...variants.map((v) => v.price)) : 0,
     image: images[0] ?? null,

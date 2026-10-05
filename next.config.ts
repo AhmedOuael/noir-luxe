@@ -1,15 +1,10 @@
 import type { NextConfig } from "next";
-
-// Cloudflare CDN host for product images, e.g. https://cdn.noir.dz
-const imageBase = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
+import { REMOTE_IMAGE_HOSTS } from "./lib/image-hosts";
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "lh3.googleusercontent.com" },
-      { protocol: "https", hostname: "images.unsplash.com" },
-      ...(imageBase ? [{ protocol: "https" as const, hostname: new URL(imageBase).hostname }] : []),
-    ],
+    // Kept in sync with imageUrl() via lib/image-hosts.ts.
+    remotePatterns: REMOTE_IMAGE_HOSTS.map((hostname) => ({ protocol: "https" as const, hostname })),
   },
 };
 

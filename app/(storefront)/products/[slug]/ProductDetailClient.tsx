@@ -50,7 +50,7 @@ export default function ProductDetailClient({ product }: { product: CatalogProdu
         {/* Info */}
         <div className="md:pt-4">
           <p className="text-xs tracking-label uppercase text-secondary mb-3">
-            {[product.category?.toUpperCase(), selected && `SKU ${selected.sku}`].filter(Boolean).join(" / ")}
+            {[product.categories.join(", ").toUpperCase(), selected && `SKU ${selected.sku}`].filter(Boolean).join(" / ")}
           </p>
           <h1 className="font-display text-3xl md:text-4xl mb-3">{product.name}</h1>
           <p className="text-sm text-secondary mb-6">{product.colorName}</p>

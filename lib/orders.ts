@@ -12,7 +12,14 @@ export type PlaceOrderResult =
   | { ok: true; orderId: string; slugs: string[] }
   | { ok: false; error: string; field?: "fullName" | "phone" | "wilaya" | "deliveryType" | "items" };
 
-class OrderError extends Error {}
+class OrderError extends Error {
+  constructor(
+    message: string,
+    readonly field: "items" | null = "items"
+  ) {
+    super(message);
+  }
+}
 
 /** Algerian mobile number -> "0XXXXXXXXX", or null if invalid. Accepts +213 / 00213 prefixes. */
 export function normalizePhone(raw: string): string | null {
@@ -81,20 +88,6 @@ export async function createOrder(input: unknown): Promise<PlaceOrderResult> {
     }
   }
 
-  const openOrders = await prisma.order.count({
-    where: {
-      customer: { phone },
-      status: { in: ["NEW", "CALLED"] },
-      createdAt: { gte: new Date(Date.now() - 60 * 60 * 1000) },
-    },
-  });
-  if (openOrders >= MAX_OPEN_ORDERS_PER_PHONE_PER_HOUR) {
-    return {
-      ok: false,
-      error: "You already have orders waiting for confirmation. Our team will call you shortly.",
-    };
-  }
-
   // Fee comes from the delivery provider, outside the DB transaction.
   const fee = await getDeliveryFee(wilaya.code, deliveryType);
   if (fee === null) {
@@ -108,6 +101,20 @@ export async function createOrder(input: unknown): Promise<PlaceOrderResult> {
 
   try {
     const result = await prisma.$transaction(async (tx) => {
+      // Serialize checkouts from the same phone (released at commit/rollback), so
+      // parallel submissions can't all pass the open-order limit at once.
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${phone}))`;
+      const openOrders = await tx.order.count({
+        where: {
+          customer: { phone },
+          status: { in: ["NEW", "CALLED", "CUSTOMER_UNREACHABLE"] },
+          createdAt: { gte: new Date(Date.now() - 60 * 60 * 1000) },
+        },
+      });
+      if (openOrders >= MAX_OPEN_ORDERS_PER_PHONE_PER_HOUR) {
+        throw new OrderError("You already have orders waiting for confirmation. Our team will call you shortly.", null);
+      }
+
       const variants = await tx.productVariant.findMany({
         where: { id: { in: lines.map((l) => l.variantId) }, active: true, product: { active: true } },
         include: { product: { select: { name: true, slug: true } } },
@@ -170,7 +177,7 @@ export async function createOrder(input: unknown): Promise<PlaceOrderResult> {
 
     return { ok: true, ...result };
   } catch (error) {
-    if (error instanceof OrderError) return { ok: false, field: "items", error: error.message };
+    if (error instanceof OrderError) return { ok: false, field: error.field ?? undefined, error: error.message };
     throw error;
   }
 }

@@ -1,6 +1,7 @@
 // Placeholder catalog (the products that used to be hardcoded in lib/products.ts)
 // so the storefront, cart and checkout work end to end before the real catalog
-// is entered. Safe to re-run. Run with: npx tsx prisma/seed-demo-products.ts
+// is entered. Re-running only adds missing products; existing ones (and their
+// stock) are never modified. Run with: npx tsx prisma/seed-demo-products.ts
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../lib/generated/prisma/client";
@@ -107,50 +108,43 @@ const demoProducts: DemoProduct[] = [
 
 async function main() {
   console.log("Seeding demo products...");
+  let created = 0;
 
   for (const demo of demoProducts) {
-    const category = await prisma.category.upsert({
-      where: { name: demo.category },
-      update: {},
-      create: { name: demo.category },
+    // Only create what's missing: an existing product may have real stock,
+    // reservations or edits that a rerun must never overwrite.
+    if (await prisma.product.findUnique({ where: { slug: demo.slug }, select: { id: true } })) continue;
+
+    await prisma.product.create({
+      data: {
+        slug: demo.slug,
+        name: demo.name,
+        description: demo.description,
+        details: demo.details,
+        limited: demo.limited ?? false,
+        categories: {
+          create: {
+            category: { connectOrCreate: { where: { name: demo.category }, create: { name: demo.category } } },
+          },
+        },
+        images: {
+          create: demo.images.map((imageUrl, i) => ({ imageUrl, isPrimary: i === 0, displayOrder: i })),
+        },
+        variants: {
+          create: Object.entries(demo.sizes).map(([size, stock]) => ({
+            sku: `${demo.skuPrefix}-${size}`,
+            size,
+            color: demo.color,
+            price: demo.price,
+            physicalStock: stock,
+          })),
+        },
+      },
     });
-
-    const fields = {
-      name: demo.name,
-      description: demo.description,
-      details: demo.details,
-      limited: demo.limited ?? false,
-    };
-    const product = await prisma.product.upsert({
-      where: { slug: demo.slug },
-      update: fields,
-      create: { slug: demo.slug, ...fields },
-    });
-
-    await prisma.productCategory.deleteMany({ where: { productId: product.id } });
-    await prisma.productCategory.create({ data: { productId: product.id, categoryId: category.id } });
-
-    await prisma.productImage.deleteMany({ where: { productId: product.id } });
-    await prisma.productImage.createMany({
-      data: demo.images.map((imageUrl, i) => ({
-        productId: product.id,
-        imageUrl,
-        isPrimary: i === 0,
-        displayOrder: i,
-      })),
-    });
-
-    for (const [size, stock] of Object.entries(demo.sizes)) {
-      const sku = `${demo.skuPrefix}-${size}`;
-      await prisma.productVariant.upsert({
-        where: { sku },
-        update: { price: demo.price, physicalStock: stock, color: demo.color, size },
-        create: { productId: product.id, sku, size, color: demo.color, price: demo.price, physicalStock: stock },
-      });
-    }
+    created++;
   }
 
-  console.log(`Seeded ${demoProducts.length} demo products.`);
+  console.log(`Created ${created} demo products (${demoProducts.length - created} already existed, left untouched).`);
 }
 
 (async () => {

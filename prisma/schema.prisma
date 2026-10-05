@@ -8,13 +8,31 @@ datasource db {
 }
 
 model User {
-  id            BigInt               @id @default(autoincrement())
-  email         String               @unique
-  passwordHash  String
-  role          String               @default("ADMIN")
-  createdAt     DateTime             @default(now()) @db.Timestamptz(3)
-  updatedAt     DateTime             @updatedAt @db.Timestamptz(3)
-  statusHistory OrderStatusHistory[]
+  id               BigInt               @id @default(autoincrement())
+  email            String               @unique
+  name             String               @default("")
+  passwordHash     String
+  role             String               @default("STAFF") // ADMIN | STAFF (confirmation team)
+  active           Boolean              @default(true)
+  failedLoginCount Int                  @default(0)
+  lockedUntil      DateTime?            @db.Timestamptz(3)
+  createdAt        DateTime             @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime             @updatedAt @db.Timestamptz(3)
+  statusHistory    OrderStatusHistory[]
+  sessions         Session[]
+}
+
+// Admin dashboard login sessions. The cookie holds a random token; only its
+// SHA-256 hash is stored, so a DB leak doesn't expose usable sessions.
+model Session {
+  id        BigInt   @id @default(autoincrement())
+  userId    BigInt
+  tokenHash String   @unique
+  expiresAt DateTime @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Product {
