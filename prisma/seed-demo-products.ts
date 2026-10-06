@@ -39,7 +39,7 @@ const demoProducts: DemoProduct[] = [
     description:
       "An oversized, heavyweight hoodie built from 450GSM brushed cotton. Structured box fit with a dropped shoulder and minimal embroidered wordmark.",
     details: ["450GSM cotton fleece", "Boxy, oversized fit", "Ribbed cuffs & hem", "Made & finished in Algeria"],
-    images: ["images/shirt.jpg"],
+    images: ["/images/shirt.jpg"],
     sizes: { S: 12, M: 24, L: 8, XL: 0 },
   },
   {
@@ -52,7 +52,7 @@ const demoProducts: DemoProduct[] = [
     description:
       "A tailored wool overcoat with sharp lapel construction and a high-density weave. Cut for a structured, architectural silhouette.",
     details: ["High-density wool blend", "Structured tailored fit", "Interior pocket", "Dry clean only"],
-    images: ["images/shirt1.jpg"],
+    images: ["/images/shirt1.jpg"],
     sizes: { S: 4, M: 15, L: 20, XL: 5 },
   },
   {
@@ -64,7 +64,7 @@ const demoProducts: DemoProduct[] = [
     price: 18200,
     description: "Minimalist low-top leather sneakers with a clean silhouette and a thick off-white rubber sole.",
     details: ["Full-grain leather upper", "Rubber cupsole", "Comes with spare laces"],
-    images: ["images/shirt2.jpg"],
+    images: ["/images/shirt2.jpg"],
     sizes: { S: 10, M: 20, L: 14, XL: 6 },
   },
   {
@@ -76,7 +76,7 @@ const demoProducts: DemoProduct[] = [
     price: 16800,
     description: "Wide-leg tactical trousers in ripstop nylon with hidden zip pockets and adjustable hems.",
     details: ["Ripstop technical nylon", "Hidden zip cargo pockets", "Adjustable hem cuffs"],
-    images: ["images/shirt3.jpg"],
+    images: ["/images/shirt3.jpg"],
     sizes: { S: 20, M: 32, L: 18, XL: 10 },
   },
   {
@@ -88,7 +88,7 @@ const demoProducts: DemoProduct[] = [
     price: 32500,
     description: "A technical, insulated puffer jacket with a matte deadstock nylon shell built for cold-weather cities.",
     details: ["Deadstock matte nylon shell", "Recycled fill insulation", "Storm cuffs"],
-    images: ["images/back.jpg"],
+    images: ["/images/back.jpg"],
     sizes: { S: 6, M: 18, L: 12, XL: 4 },
     limited: true,
   },
@@ -101,7 +101,7 @@ const demoProducts: DemoProduct[] = [
     price: 14200,
     description: "Garment-dyed hoodie with a soft, broken-in hand-feel from the first wear.",
     details: ["380GSM garment-dyed fleece", "Relaxed fit", "Kangaroo pocket"],
-    images: ["images/back2.jpg"],
+    images: ["/images/back2.jpg"],
     sizes: { S: 9, M: 21, L: 16, XL: 7 },
   },
 ];

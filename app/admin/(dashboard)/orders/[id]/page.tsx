@@ -35,7 +35,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           {/* Customer */}
           <section className={card}>
             <h2 className={cardTitle}>Customer</h2>
-            <p className="text-lg">{order.customer.name}</p>
+            <Link href={`/admin/clients/${order.customer.id}`} className="text-lg hover:underline underline-offset-4">{order.customer.name}</Link>
             <a href={`tel:${order.customer.phone}`} className="inline-block mt-1 text-lg font-semibold underline underline-offset-4">
               {formatPhone(order.customer.phone)}
             </a>

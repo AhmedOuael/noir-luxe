@@ -96,7 +96,7 @@ export type OrderDetail = {
   id: string;
   createdAt: string;
   status: OrderStatus;
-  customer: { name: string; phone: string };
+  customer: { id: string; name: string; phone: string };
   // Other orders from the same phone: helps spot fake / serial-refusal customers.
   history: { total: number; delivered: number; refusedOrReturned: number; canceled: number };
   wilaya: { code: string; name: string };
@@ -143,7 +143,7 @@ export async function getOrderDetail(idParam: string): Promise<OrderDetail | nul
     id: order.id.toString(),
     createdAt: order.createdAt.toISOString(),
     status: order.status as OrderStatus,
-    customer: { name: order.customer.fullName, phone: order.customer.phone },
+    customer: { id: order.customer.id.toString(), name: order.customer.fullName, phone: order.customer.phone },
     history: {
       total: byStatus.reduce((n, g) => n + g._count._all, 0),
       delivered: count("DELIVERED"),

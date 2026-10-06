@@ -9,7 +9,7 @@ import { imageUrl } from "@/lib/images";
 // the wardrobe floor on phones/tablets, the upper wall on desktop. A new
 // photo with a different layout may need these positions adjusted.
 const HERO = {
-  src: "images/hero-wardrobe.jpg",
+  src: "/images/hero-wardrobe.jpg",
   alt: "Dark jackets and white shirts in a softly lit wardrobe, late sun on the wall",
   focal: "object-[18%_center] md:object-[22%_center] lg:object-center",
   title: "Autumn–Winter 2026",
