@@ -49,6 +49,14 @@ export const STATUS_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
   CANCELED: [],
 };
 
+/** Groups of statuses the overview links to (e.g. /admin/orders?stage=to-call). */
+export const ORDER_STAGES = {
+  "to-call": { label: "Needs a call", statuses: ["NEW", "CALLED", "CUSTOMER_UNREACHABLE"] as OrderStatus[] },
+  "on-the-road": { label: "On the road", statuses: ["OUT_FOR_DELIVERY", "AT_DELIVERY_DESK"] as OrderStatus[] },
+} as const;
+export type OrderStage = keyof typeof ORDER_STAGES;
+export const isOrderStage = (v: unknown): v is OrderStage => typeof v === "string" && v in ORDER_STAGES;
+
 /** Before the confirmation call is done: delivery details can still be filled in. */
 export const PRE_CONFIRMATION: OrderStatus[] = ["NEW", "CALLED", "CUSTOMER_UNREACHABLE"];
 

@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Package, ShoppingBag, Users, UserCog, X, LogOut } from "lucide-react";
+import { LayoutDashboard, Menu, Package, ShoppingBag, Users, UserCog, X, LogOut } from "lucide-react";
 
 const NAV = [
+  { href: "/admin", label: "Overview", icon: LayoutDashboard, adminOnly: true },
   { href: "/admin/orders", label: "Orders", icon: ShoppingBag, adminOnly: false },
   { href: "/admin/products", label: "Products", icon: Package, adminOnly: true },
   { href: "/admin/clients", label: "Clients", icon: Users, adminOnly: false },
@@ -43,13 +44,14 @@ export default function Sidebar({ user, logoutAction }: Props) {
 
   const nav = (
     <nav className="flex flex-col h-full">
-      <Link href="/admin/orders" className="flex items-baseline gap-2 px-6 h-16 shrink-0 border-b border-outline-variant">
+      <Link href="/admin" className="flex items-baseline gap-2 px-6 h-16 shrink-0 border-b border-outline-variant">
         <span className="font-display text-2xl tracking-tighter">NOIR</span>
         <span className="text-xs text-secondary">Admin</span>
       </Link>
       <ul className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
         {items.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href || pathname.startsWith(`${href}/`);
+          // "/admin" (Overview) only matches itself; other sections include their sub-pages.
+          const active = href === "/admin" ? pathname === "/admin" : pathname === href || pathname.startsWith(`${href}/`);
           return (
             <li key={href}>
               <Link

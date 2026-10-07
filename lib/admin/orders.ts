@@ -7,10 +7,13 @@ import {
   DETAILS_EDITABLE,
   ORDER_STATUSES,
   STATUS_TRANSITIONS,
+  ORDER_STAGES,
+  isOrderStage,
   isOrderStatus,
   type OrderStatus,
 } from "../order-status";
 import type { SessionUser } from "../auth/session";
+import { parseAlgiersDate } from "./stats";
 
 export const ORDERS_PAGE_SIZE = 50;
 
@@ -34,9 +37,26 @@ export type OrderListRow = {
   total: number;
 };
 
-export async function listOrders(params: { status?: string; q?: string; page?: number }) {
+export async function listOrders(params: {
+  status?: string;
+  stage?: string;
+  from?: string; // YYYY-MM-DD, Algeria time, inclusive
+  to?: string; // YYYY-MM-DD, Algeria time, inclusive
+  q?: string;
+  page?: number;
+}) {
   const where: Prisma.OrderWhereInput = {};
   if (isOrderStatus(params.status)) where.status = params.status;
+  else if (isOrderStage(params.stage)) where.status = { in: ORDER_STAGES[params.stage].statuses };
+
+  const from = params.from ? parseAlgiersDate(params.from) : null;
+  const to = params.to ? parseAlgiersDate(params.to) : null;
+  if (from || to) {
+    where.createdAt = {
+      ...(from ? { gte: from } : {}),
+      ...(to ? { lt: new Date(to.getTime() + 24 * 60 * 60 * 1000) } : {}),
+    };
+  }
 
   const q = params.q?.trim();
   if (q) {

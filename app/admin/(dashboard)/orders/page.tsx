@@ -1,15 +1,23 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth/session";
 import { listOrders } from "@/lib/admin/orders";
-import { ORDER_STATUSES, STATUS_LABELS, isOrderStatus } from "@/lib/order-status";
+import { ORDER_STAGES, ORDER_STATUSES, STATUS_LABELS, isOrderStage, isOrderStatus } from "@/lib/order-status";
 import { formatDateTime, formatDZD, formatPhone } from "@/lib/format";
 import StatusBadge, { STATUS_COLORS } from "@/components/admin/StatusBadge";
 
-type SearchParams = Promise<{ status?: string; q?: string; page?: string }>;
+type SearchParams = Promise<{ status?: string; stage?: string; from?: string; to?: string; q?: string; page?: string }>;
+type Filters = { status?: string; stage?: string; from?: string; to?: string; q?: string; page?: number };
 
-function href(params: { status?: string; q?: string; page?: number }) {
+const DATE = /^d{4}-d{2}-d{2}$/;
+const formatDay = (d: string) =>
+  new Date(`${d}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+
+function href(params: Filters) {
   const sp = new URLSearchParams();
   if (params.status) sp.set("status", params.status);
+  else if (params.stage) sp.set("stage", params.stage);
+  if (params.from) sp.set("from", params.from);
+  if (params.to) sp.set("to", params.to);
   if (params.q) sp.set("q", params.q);
   if (params.page && params.page > 1) sp.set("page", String(params.page));
   const s = sp.toString();
@@ -20,10 +28,15 @@ export default async function OrdersPage({ searchParams }: { searchParams: Searc
   await requireUser();
   const sp = await searchParams;
   const status = isOrderStatus(sp.status) ? sp.status : undefined;
+  const stage = !status && isOrderStage(sp.stage) ? sp.stage : undefined;
+  const from = sp.from && DATE.test(sp.from) ? sp.from : undefined;
+  const to = sp.to && DATE.test(sp.to) ? sp.to : undefined;
   const q = sp.q?.trim() || undefined;
   const page = Math.max(1, Number(sp.page) || 1);
+  const dates = { from, to };
 
-  const { rows, total, pageCount, counts } = await listOrders({ status, q, page });
+  const { rows, total, pageCount, counts } = await listOrders({ status, stage, from, to, q, page });
+  const dateLabel = from && to && from === to ? formatDay(from) : from && to ? `${formatDay(from)} – ${formatDay(to)}` : from ? `Since ${formatDay(from)}` : to ? `Until ${formatDay(to)}` : null;
   const allCount = Object.values(counts).reduce((a, b) => a + b, 0);
 
   const chip = (active: boolean) =>
@@ -37,6 +50,9 @@ export default async function OrdersPage({ searchParams }: { searchParams: Searc
         <h1 className="font-display text-3xl">Orders</h1>
         <form action="/admin/orders" className="flex gap-2 w-full md:w-auto">
           {status && <input type="hidden" name="status" value={status} />}
+          {stage && <input type="hidden" name="stage" value={stage} />}
+          {from && <input type="hidden" name="from" value={from} />}
+          {to && <input type="hidden" name="to" value={to} />}
           <input
             name="q"
             defaultValue={q}
@@ -47,12 +63,21 @@ export default async function OrdersPage({ searchParams }: { searchParams: Searc
         </form>
       </div>
 
+      {(stage || dateLabel) && (
+        <div className="flex flex-wrap items-center gap-2 mb-4 text-sm">
+          <span className="text-secondary">Showing</span>
+          {stage && <span className="px-2.5 py-1 rounded-full bg-surface-container-high">{ORDER_STAGES[stage].label}</span>}
+          {dateLabel && <span className="px-2.5 py-1 rounded-full bg-surface-container-high">Placed {dateLabel}</span>}
+          <Link href={href({ q })} className="underline underline-offset-4 text-secondary hover:text-primary">Clear filters</Link>
+        </div>
+      )}
+
       <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-2 mb-6">
-        <Link href={href({ q })} className={chip(!status)}>
+        <Link href={href({ q, ...dates })} className={chip(!status && !stage)}>
           All {allCount}
         </Link>
         {ORDER_STATUSES.map((s) => (
-          <Link key={s} href={href({ status: s, q })} className={`${chip(status === s)} inline-flex items-center gap-1.5`}>
+          <Link key={s} href={href({ status: s, q, ...dates })} className={`${chip(status === s)} inline-flex items-center gap-1.5`}>
             <span className={`h-1.5 w-1.5 rounded-full ${STATUS_COLORS[s].dot}`} aria-hidden="true" />
             {STATUS_LABELS[s]} {counts[s]}
           </Link>
@@ -139,11 +164,11 @@ export default async function OrdersPage({ searchParams }: { searchParams: Searc
           <div className="flex items-center justify-between mt-6 text-sm">
             <span className="text-secondary">{total} orders</span>
             <div className="flex items-center gap-4">
-              {page > 1 && <Link href={href({ status, q, page: page - 1 })} className="hover:underline">← Newer</Link>}
+              {page > 1 && <Link href={href({ status, stage, q, ...dates, page: page - 1 })} className="hover:underline">← Newer</Link>}
               <span className="text-secondary">
                 Page {page} / {pageCount}
               </span>
-              {page < pageCount && <Link href={href({ status, q, page: page + 1 })} className="hover:underline">Older →</Link>}
+              {page < pageCount && <Link href={href({ status, stage, q, ...dates, page: page + 1 })} className="hover:underline">Older →</Link>}
             </div>
           </div>
         </>

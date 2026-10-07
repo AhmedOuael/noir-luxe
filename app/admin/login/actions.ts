@@ -14,5 +14,5 @@ export async function loginAction(_prev: LoginState, formData: FormData): Promis
 
   const result = await login(email, password);
   if (!result.ok) return { error: result.error };
-  redirect("/admin/orders");
+  redirect("/admin"); // admins land on Overview; staff are sent on to Orders
 }

@@ -3,7 +3,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import LoginForm from "./LoginForm";
 
 export default async function AdminLoginPage() {
-  if (await getCurrentUser()) redirect("/admin/orders");
+  if (await getCurrentUser()) redirect("/admin");
 
   return (
     <div className="min-h-screen flex items-center justify-center px-5">
