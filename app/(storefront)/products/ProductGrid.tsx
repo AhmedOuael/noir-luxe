@@ -2,7 +2,14 @@
 
 import { useMemo, useState } from "react";
 import ProductCard from "@/components/ProductCard";
+import Reveal from "@/components/motion/Reveal";
 import type { CatalogProduct } from "@/lib/catalog";
+
+// The first cards rise in with CSS from the first frame (they're on screen at
+// load); the rest fade in as they're scrolled to. Changing category remounts
+// the grid, so the new selection plays the entrance again.
+const ENTRANCE_COUNT = 6;
+const STAGGER_MS = 90;
 
 export default function ProductGrid({
   products,
@@ -21,7 +28,7 @@ export default function ProductGrid({
   return (
     <>
       {/* Filter chips */}
-      <div className="flex flex-wrap gap-3 mb-12 hide-scrollbar overflow-x-auto pb-2">
+      <div className="flex flex-wrap gap-3 mb-12 hide-scrollbar overflow-x-auto pb-2 motion-safe:animate-rise [animation-delay:100ms]">
         {["All", ...categories].map((cat) => (
           <button
             key={cat}
@@ -39,10 +46,18 @@ export default function ProductGrid({
 
       <p className="text-sm text-secondary mb-8">Showing {filtered.length} of {products.length} items.</p>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-        {filtered.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
+      <div key={active} className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+        {filtered.map((p, i) =>
+          i < ENTRANCE_COUNT ? (
+            <div key={p.id} className="motion-safe:animate-rise" style={{ animationDelay: `${150 + i * STAGGER_MS}ms` }}>
+              <ProductCard product={p} />
+            </div>
+          ) : (
+            <Reveal key={p.id} delay={(i % 3) * 120}>
+              <ProductCard product={p} />
+            </Reveal>
+          )
+        )}
       </div>
 
       {filtered.length === 0 && (

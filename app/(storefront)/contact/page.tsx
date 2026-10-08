@@ -25,7 +25,7 @@ export default function ContactPage() {
 
   return (
     <div className="px-5 md:px-16 py-20">
-      <div className="max-w-xl mb-16">
+      <div className="max-w-xl mb-16 motion-safe:animate-rise">
         <h1 className="font-display text-3xl md:text-5xl mb-6">Connect with NOIR</h1>
         <p className="text-secondary text-lg">
           Our team is available to assist with inquiries regarding limited drops, private showings, and
@@ -35,7 +35,7 @@ export default function ContactPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-8 motion-safe:animate-rise [animation-delay:150ms]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Field label="Name" name="name" type="text" required />
             <Field label="Email" name="email" type="email" required />
@@ -73,18 +73,18 @@ export default function ContactPage() {
 
         {/* Details */}
         <div className="space-y-12">
-          <div>
+          <div className="motion-safe:animate-rise [animation-delay:300ms]">
             <h3 className="text-xs font-semibold tracking-label uppercase mb-3">General Inquiries</h3>
             <a href="mailto:concierge@noirluxe.com" className="text-lg hover:underline">
               concierge@noirluxe.com
             </a>
           </div>
-          <div>
+          <div className="motion-safe:animate-rise [animation-delay:400ms]">
             <h3 className="text-xs font-semibold tracking-label uppercase mb-3">Customer Service Hours</h3>
             <p className="text-secondary">Sunday – Thursday: 09:00 – 18:00 (Algiers time)</p>
             <p className="text-secondary">Friday – Saturday: Closed</p>
           </div>
-          <div>
+          <div className="motion-safe:animate-rise [animation-delay:500ms]">
             <h3 className="text-xs font-semibold tracking-label uppercase mb-3">Studio &amp; Fulfillment</h3>
             <p className="text-secondary">Algiers, Algeria</p>
             <p className="text-secondary">Nationwide delivery via Yalidine — all 58 wilayas.</p>
